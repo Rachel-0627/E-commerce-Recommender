@@ -1,0 +1,1050 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI 商品推荐</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="site-header-inner">
+        <span class="site-logo">E-commerce Recommender</span>
+        <div class="site-header-right">
+          <div class="header-user-select" id="header-user-select">
+            <label class="header-user-label" for="user-select">当前用户</label>
+            <select id="user-select" name="user_id">
+              <option value="u_001">runner_chen</option>
+              <option value="u_002">home_life</option>
+            </select>
+          </div>
+          <nav class="site-nav" role="tablist" aria-label="主导航">
+            <a class="nav-tab is-active" id="nav-tab-user" href="#directions" role="tab">推荐</a>
+            <a class="nav-tab" id="nav-tab-admin" href="#admin" role="tab">管理后台</a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <div id="user-view">
+        <section class="workspace" aria-labelledby="page-title">
+          <div class="toolbar">
+            <div>
+              <h1 id="page-title">AI 商品推荐</h1>
+              <p class="intro">先判断用户有没有方向，再进入更具体的商品推荐页。</p>
+            </div>
+          </div>
+
+        <section class="flow-stage" id="direction-stage" aria-labelledby="direction-title">
+          <section class="direction-panel">
+            <div class="direction-heading">
+              <div>
+                <p class="eyebrow">Direction Finder</p>
+                <h2 id="direction-title">先推荐方向，再进入具体商品</h2>
+                <p class="direction-intro">如果还没方向，就按预算和资源推荐起步路线；如果已有倾向品类，就直接收窄到更具体的方向。</p>
+              </div>
+              <button class="stage-jump-button" id="enter-general-products" type="button">跳过方向，直接看全部推荐</button>
+            </div>
+
+            <div class="direction-mode-switch" role="tablist" aria-label="方向推荐模式">
+              <button class="mode-button is-active" id="mode-user" type="button" data-direction-mode="user">我还没方向</button>
+              <button class="mode-button" id="mode-category" type="button" data-direction-mode="category">我已有倾向品类</button>
+            </div>
+
+            <div class="direction-forms">
+              <form class="direction-form" id="direction-user-form">
+                <label for="direction-budget">预算参考</label>
+                <input id="direction-budget" type="number" min="0" step="10" placeholder="例如 300" />
+
+                <label for="direction-interests">补充兴趣关键词</label>
+                <input id="direction-interests" type="text" placeholder="例如 跑步, 通勤, 咖啡" />
+
+                <label for="direction-resources">已有资源</label>
+                <input id="direction-resources" type="text" placeholder="例如 已有跑鞋, 已有滤杯" />
+
+                <button type="submit">基于当前用户画像推荐方向</button>
+              </form>
+
+              <form class="direction-form is-hidden" id="direction-category-form">
+                <label for="direction-category">倾向品类</label>
+                <select id="direction-category">
+                  <optgroup label="运动健身">
+                    <option value="运动鞋">运动鞋</option>
+                    <option value="健身装备">健身装备</option>
+                  </optgroup>
+                  <optgroup label="美妆护肤">
+                    <option value="护肤">护肤</option>
+                    <option value="彩妆">彩妆</option>
+                  </optgroup>
+                  <optgroup label="数码 3C">
+                    <option value="耳机">耳机</option>
+                    <option value="智能设备">智能设备</option>
+                    <option value="电脑配件">电脑配件</option>
+                    <option value="音频设备">音频设备</option>
+                    <option value="电源配件">电源配件</option>
+                  </optgroup>
+                  <optgroup label="宠物">
+                    <option value="宠物用品">宠物用品</option>
+                    <option value="宠物食品">宠物食品</option>
+                    <option value="宠物保健">宠物保健</option>
+                  </optgroup>
+                  <optgroup label="家居生活">
+                    <option value="厨房">厨房</option>
+                    <option value="收纳">收纳</option>
+                  </optgroup>
+                </select>
+
+                <label for="direction-category-budget">预算参考</label>
+                <input id="direction-category-budget" type="number" min="0" step="10" placeholder="例如 220" />
+
+                <label for="direction-category-interests">偏好关键词</label>
+                <input id="direction-category-interests" type="text" placeholder="例如 手冲, 家居, 透气" />
+
+                <button type="submit">按倾向品类推荐方向</button>
+              </form>
+            </div>
+
+            <div class="status-row direction-status-row">
+              <p id="direction-status">填写上方信息，点击按钮获取方向推荐。</p>
+            </div>
+
+            <section class="direction-grid" id="direction-grid" aria-live="polite"></section>
+          </section>
+        </section>
+
+        <section class="flow-stage is-hidden" id="product-stage" aria-labelledby="product-stage-title">
+          <section class="product-stage-panel">
+            <div class="product-stage-heading">
+              <div>
+                <p class="eyebrow">Product Finder</p>
+                <h2 id="product-stage-title">商品推荐页</h2>
+                <p class="product-stage-intro" id="product-stage-intro">先选择一个方向，系统会在该方向下给出更具体的商品建议。</p>
+              </div>
+              <button class="stage-back-button" id="back-to-directions" type="button">返回方向页</button>
+            </div>
+
+            <form class="control-panel" id="recommendation-form">
+              <label for="scene-select">推荐场景</label>
+              <select id="scene-select" name="scene">
+                <option value="home">首页推荐</option>
+                <option value="detail">商品详情页</option>
+                <option value="cart">购物车搭配</option>
+              </select>
+
+              <button type="submit">刷新推荐</button>
+            </form>
+
+            <div class="status-row">
+              <p id="status-text">正在连接推荐服务...</p>
+              <p id="request-id"></p>
+            </div>
+
+            <div class="active-direction-banner is-hidden" id="active-direction-banner">
+              <p id="active-direction-text"></p>
+              <button id="clear-direction-filter" type="button">查看全部推荐</button>
+            </div>
+
+            <section class="direction-layer-panel is-hidden" id="direction-layer-panel" aria-labelledby="direction-layer-title">
+              <div class="trend-preview-heading">
+                <h3 id="direction-layer-title">方向内商品分层</h3>
+                <p id="direction-layer-status">这里会按入门款、核心商品、搭配款等层次展示当前方向的商品结构。</p>
+              </div>
+              <div class="direction-layer-grid" id="direction-layer-grid" aria-live="polite"></div>
+            </section>
+
+            <section class="recommendation-grid" id="recommendation-grid" aria-live="polite"></section>
+          </section>
+        </section>
+
+        </section><!-- /workspace -->
+      </div><!-- /user-view -->
+
+      <div id="admin-view" class="is-hidden">
+        <nav class="admin-subnav" aria-label="管理模块导航">
+          <a class="admin-subnav-link" href="#admin-analytics">效果看板</a>
+          <a class="admin-subnav-link" href="#admin-trends">趋势管理</a>
+          <a class="admin-subnav-link" href="#admin-product-source">商品导入</a>
+          <a class="admin-subnav-link" href="#admin-product-sync">自动同步</a>
+          <a class="admin-subnav-link" href="#admin-product-management">商品管理</a>
+          <a class="admin-subnav-link" href="#admin-user-management">用户画像</a>
+          <a class="admin-subnav-link" href="#admin-direction-management">方向管理</a>
+          <a class="admin-subnav-link" href="#admin-import-history">导入历史</a>
+        </nav>
+        <div class="admin-workspace">
+
+        <section id="admin-analytics" class="analytics-panel" aria-labelledby="analytics-title">
+          <div class="analytics-heading">
+            <div>
+              <p class="eyebrow">Runtime Analytics</p>
+              <h2 id="analytics-title">推荐效果看板</h2>
+            </div>
+            <button id="refresh-analytics" type="button">刷新看板</button>
+          </div>
+
+          <div class="metric-grid" id="metric-grid" aria-live="polite"></div>
+
+          <div class="top-products">
+            <h3>Top 商品表现</h3>
+            <div class="top-product-list" id="top-product-list"></div>
+          </div>
+        </section>
+
+        <section id="admin-trends" class="trend-panel" aria-labelledby="trend-title">
+          <div class="trend-heading">
+            <div>
+              <p class="eyebrow">Trend Sources</p>
+              <h2 id="trend-title">趋势来源管理</h2>
+              <p class="trend-intro">这里可以核对已导入的趋势来源、热度记录和商品映射情况，确认外部调研数据有没有正确接进系统。</p>
+            </div>
+            <button id="refresh-trends" type="button">刷新趋势数据</button>
+          </div>
+
+          <form class="trend-filter-form" id="trend-filter-form">
+            <label for="trend-source-filter">来源</label>
+            <select id="trend-source-filter">
+              <option value="">全部来源</option>
+            </select>
+
+            <label for="trend-category-filter">品类</label>
+            <select id="trend-category-filter">
+              <option value="">全部品类</option>
+            </select>
+          </form>
+
+          <form class="trend-create-form" id="trend-create-form">
+            <label for="trend-create-source">来源</label>
+            <input id="trend-create-source" type="text" placeholder="例如 google_trends" />
+
+            <label for="trend-create-keyword">关键词</label>
+            <input id="trend-create-keyword" type="text" placeholder="例如 便携咖啡杯" />
+
+            <label for="trend-create-category">品类</label>
+            <input id="trend-create-category" type="text" placeholder="例如 厨房" />
+
+            <label for="trend-create-score">热度分</label>
+            <input id="trend-create-score" type="number" min="0" step="0.1" placeholder="例如 78" />
+
+            <label for="trend-create-sales-score">销量分</label>
+            <input id="trend-create-sales-score" type="number" min="0" step="0.1" placeholder="例如 66" />
+
+            <label for="trend-create-product">映射商品</label>
+            <select id="trend-create-product">
+              <option value="">暂不映射到商品</option>
+            </select>
+
+            <button id="trend-create-submit" type="submit">新增趋势记录</button>
+          </form>
+
+          <div class="status-row trend-create-status-row">
+            <p id="trend-create-status">可以直接在这里手工补充趋势记录。</p>
+          </div>
+
+          <div class="status-row trend-status-row">
+            <p id="trend-status">正在加载趋势来源...</p>
+          </div>
+
+          <div class="metric-grid" id="trend-metric-grid" aria-live="polite"></div>
+
+          <div class="trend-adapter-notes">
+            <span class="adapter-chip">generic</span>
+            <span class="adapter-chip">google_trends</span>
+            <span class="adapter-chip">ecommerce_rank</span>
+          </div>
+
+          <form class="trend-import-form" id="trend-import-form">
+            <label for="trend-import-adapter">导入适配器</label>
+            <select id="trend-import-adapter">
+              <option value="">自动识别</option>
+            </select>
+
+            <label for="trend-import-file">选择文件</label>
+            <input id="trend-import-file" type="file" accept=".json,.csv,text/csv,application/json" />
+
+            <label for="trend-import-content">或粘贴 JSON / CSV 内容</label>
+            <textarea
+              id="trend-import-content"
+              rows="6"
+              placeholder="可以直接粘贴 JSON 数组或 CSV 内容"
+            ></textarea>
+
+            <div class="trend-import-actions">
+              <button id="trend-preview-submit" type="button">先预览导入结果</button>
+              <button id="trend-import-submit" type="submit">确认批量导入</button>
+            </div>
+          </form>
+
+          <div class="status-row trend-import-status-row">
+            <p id="trend-import-status">支持上传 JSON/CSV 文件，也支持直接粘贴导出内容。</p>
+          </div>
+
+          <section class="trend-preview-panel" aria-labelledby="trend-preview-title">
+            <div class="trend-preview-heading">
+              <h3 id="trend-preview-title">导入预览</h3>
+              <p id="trend-preview-status">点击“先预览导入结果”后，这里会显示可导入条数、错误条数和自动映射情况。</p>
+            </div>
+            <div class="import-preset-panel" id="trend-preset-panel"></div>
+            <div class="metric-grid" id="trend-preview-metric-grid" aria-live="polite"></div>
+            <div class="trend-preview-list" id="trend-preview-list" aria-live="polite"></div>
+          </section>
+
+          <section class="trend-list" id="trend-list" aria-live="polite"></section>
+        </section>
+
+        <section id="admin-product-source" class="product-source-panel" aria-labelledby="product-source-title">
+          <div class="trend-heading">
+            <div>
+              <p class="eyebrow">Product Sources</p>
+              <h2 id="product-source-title">商品来源导入</h2>
+              <p class="trend-intro">这里用来把外部商品清单接进商品库。导入成功后，这些商品会进入 SQLite，并参与后续推荐。</p>
+            </div>
+            <button id="refresh-product-sources" type="button">刷新商品来源</button>
+          </div>
+
+          <form class="trend-filter-form" id="product-source-filter-form">
+            <label for="product-source-filter">来源</label>
+            <select id="product-source-filter">
+              <option value="">全部来源</option>
+            </select>
+
+            <label for="product-category-filter">品类</label>
+            <select id="product-category-filter">
+              <option value="">全部品类</option>
+            </select>
+          </form>
+
+          <div class="status-row trend-status-row">
+            <p id="product-source-status">正在加载商品来源...</p>
+          </div>
+
+          <div class="metric-grid" id="product-source-metric-grid" aria-live="polite"></div>
+
+          <form class="trend-import-form" id="product-import-form">
+            <label for="product-import-adapter">导入适配器</label>
+            <select id="product-import-adapter">
+              <option value="">自动识别</option>
+            </select>
+
+            <label for="product-import-file">选择文件</label>
+            <input id="product-import-file" type="file" accept=".json,.csv,text/csv,application/json" />
+
+            <label for="product-import-content">或粘贴 JSON / CSV 内容</label>
+            <textarea
+              id="product-import-content"
+              rows="6"
+              placeholder="可以直接粘贴商品 JSON 数组或 CSV 内容"
+            ></textarea>
+
+            <div class="trend-import-actions">
+              <button id="product-preview-submit" type="button">先预览商品导入</button>
+              <button id="product-import-submit" type="submit">确认批量导入商品</button>
+            </div>
+          </form>
+
+          <div class="status-row trend-import-status-row">
+            <p id="product-import-status">支持导入商品清单，并保留来源、外部 ID、热度和销量信号。</p>
+          </div>
+
+          <section class="trend-preview-panel" aria-labelledby="product-preview-title">
+            <div class="trend-preview-heading">
+              <h3 id="product-preview-title">商品导入预览</h3>
+              <p id="product-preview-status">点击“先预览商品导入”后，这里会显示商品条数、错误行和自动生成的商品 ID。</p>
+            </div>
+            <div class="import-preset-panel" id="product-preset-panel"></div>
+            <div class="metric-grid" id="product-preview-metric-grid" aria-live="polite"></div>
+            <div class="trend-preview-list" id="product-preview-list" aria-live="polite"></div>
+          </section>
+
+          <section class="trend-list" id="product-source-list" aria-live="polite"></section>
+        </section>
+
+        <section id="admin-product-sync" class="product-source-panel" aria-labelledby="product-sync-title">
+          <div class="trend-heading">
+            <div>
+              <p class="eyebrow">Product Sync</p>
+              <h2 id="product-sync-title">自动同步商品资源</h2>
+              <p class="trend-intro">这里用来配置可重复执行的商品来源，同步时会自动读取本地文件或远程 URL，并把商品更新进商品库。</p>
+            </div>
+            <div class="trend-import-actions">
+              <button id="refresh-product-sync" type="button">刷新同步来源</button>
+              <button id="run-all-product-sync" type="button">同步全部启用来源</button>
+            </div>
+          </div>
+
+          <form class="trend-filter-form" id="product-sync-filter-form">
+            <label for="product-sync-type-filter">来源类型</label>
+            <select id="product-sync-type-filter">
+              <option value="">全部类型</option>
+              <option value="file">文件</option>
+              <option value="url">URL</option>
+            </select>
+
+            <label for="product-sync-enabled-filter">启用状态</label>
+            <select id="product-sync-enabled-filter">
+              <option value="">全部状态</option>
+              <option value="true">已启用</option>
+              <option value="false">已停用</option>
+            </select>
+          </form>
+
+          <form class="product-management-form" id="product-sync-create-form">
+            <label for="product-sync-create-id">同步来源 ID</label>
+            <input id="product-sync-create-id" type="text" placeholder="例如 sync_remote_amazon" />
+
+            <label for="product-sync-create-name">名称</label>
+            <input id="product-sync-create-name" type="text" placeholder="例如 Amazon 热销榜自动同步" />
+
+            <label for="product-sync-create-type">来源类型</label>
+            <select id="product-sync-create-type">
+              <option value="file">文件</option>
+              <option value="url">URL</option>
+            </select>
+
+            <label for="product-sync-create-location">位置</label>
+            <input id="product-sync-create-location" type="text" placeholder="例如 data/product_catalog_market_export.csv 或 https://..." />
+
+            <label for="product-sync-create-adapter">适配器</label>
+            <select id="product-sync-create-adapter">
+              <option value="">自动识别</option>
+            </select>
+
+            <label for="product-sync-create-enabled">启用</label>
+            <select id="product-sync-create-enabled">
+              <option value="true">是</option>
+              <option value="false">否</option>
+            </select>
+
+            <label class="product-edit-span-2" for="product-sync-create-notes">备注</label>
+            <textarea id="product-sync-create-notes" class="product-edit-span-2" rows="3" placeholder="说明这个来源的用途、同步频率或风险边界"></textarea>
+
+            <button id="product-sync-create-submit" type="submit">新增同步来源</button>
+          </form>
+
+          <div class="status-row trend-status-row">
+            <p id="product-sync-status">正在加载自动同步来源...</p>
+          </div>
+
+          <div class="metric-grid" id="product-sync-metric-grid" aria-live="polite"></div>
+          <section class="trend-list" id="product-sync-list" aria-live="polite"></section>
+        </section>
+
+        <section id="admin-product-management" class="product-source-panel" aria-labelledby="product-management-title">
+          <div class="trend-heading">
+            <div>
+              <p class="eyebrow">Product Manager</p>
+              <h2 id="product-management-title">商品管理页</h2>
+              <p class="trend-intro">这里可以直接新增商品、编辑商品主数据，并按来源和品类筛选。适合维护推荐用的商品库。</p>
+            </div>
+            <button id="refresh-product-management" type="button">刷新商品管理</button>
+          </div>
+
+          <form class="trend-filter-form" id="product-management-filter-form">
+            <label for="product-management-source-filter">来源</label>
+            <select id="product-management-source-filter">
+              <option value="">全部来源</option>
+            </select>
+
+            <label for="product-management-category-filter">品类</label>
+            <select id="product-management-category-filter">
+              <option value="">全部品类</option>
+            </select>
+          </form>
+
+          <form class="product-management-form" id="product-create-form">
+            <label for="product-create-id">商品 ID</label>
+            <input id="product-create-id" type="text" placeholder="例如 p_custom_001" />
+
+            <label for="product-create-title">商品标题</label>
+            <input id="product-create-title" type="text" placeholder="例如 轻量训练背包" />
+
+            <label for="product-create-category">品类</label>
+            <input id="product-create-category" type="text" placeholder="例如 健身装备" />
+
+            <label for="product-create-brand">品牌</label>
+            <input id="product-create-brand" type="text" placeholder="例如 Adidas" />
+
+            <label for="product-create-price">价格</label>
+            <input id="product-create-price" type="number" min="0" step="0.1" placeholder="例如 199" />
+
+            <label for="product-create-stock">库存</label>
+            <input id="product-create-stock" type="number" min="0" step="1" placeholder="例如 80" />
+
+            <label for="product-create-rating">评分</label>
+            <input id="product-create-rating" type="number" min="0" max="5" step="0.1" placeholder="例如 4.6" />
+
+            <label for="product-create-source">来源</label>
+            <input id="product-create-source" type="text" placeholder="例如 manual" />
+
+            <label for="product-create-external-id">外部 ID</label>
+            <input id="product-create-external-id" type="text" placeholder="例如 SKU-001" />
+
+            <label for="product-create-popularity">热度分</label>
+            <input id="product-create-popularity" type="number" min="0" step="0.1" placeholder="例如 70" />
+
+            <label for="product-create-sales">销量分</label>
+            <input id="product-create-sales" type="number" min="0" step="0.1" placeholder="例如 65" />
+
+            <label for="product-create-image">图片链接</label>
+            <input id="product-create-image" type="text" placeholder="https://..." />
+
+            <label for="product-create-features">特征标签</label>
+            <input id="product-create-features" type="text" placeholder="例如 跑步, 训练, 轻量" />
+
+            <label for="product-create-description">商品描述</label>
+            <textarea id="product-create-description" rows="4" placeholder="一句话描述这个商品适合什么场景"></textarea>
+
+            <button id="product-create-submit" type="submit">新增商品</button>
+          </form>
+
+          <div class="status-row trend-status-row">
+            <p id="product-management-status">正在加载商品管理数据...</p>
+          </div>
+
+          <div class="metric-grid" id="product-management-metric-grid" aria-live="polite"></div>
+          <section class="trend-list" id="product-management-list" aria-live="polite"></section>
+        </section>
+
+        <section id="admin-user-management" class="product-source-panel" aria-labelledby="user-management-title">
+          <div class="trend-heading">
+            <div>
+              <p class="eyebrow">User Manager</p>
+              <h2 id="user-management-title">用户画像管理页</h2>
+              <p class="trend-intro">这里可以直接新增和编辑用户画像，维护长期兴趣、近期兴趣、品牌偏好、预算区间和负向偏好。</p>
+            </div>
+            <button id="refresh-user-management" type="button">刷新用户画像</button>
+          </div>
+
+          <form class="trend-filter-form" id="user-management-filter-form">
+            <label for="user-budget-filter">预算层级</label>
+            <select id="user-budget-filter">
+              <option value="">全部预算</option>
+              <option value="low">低预算</option>
+              <option value="mid">中预算</option>
+              <option value="high">高预算</option>
+            </select>
+
+            <label for="user-interest-filter">兴趣关键词</label>
+            <input id="user-interest-filter" type="text" placeholder="例如 跑步, 咖啡" />
+          </form>
+
+          <form class="product-management-form" id="user-create-form">
+            <label for="user-create-id">用户 ID</label>
+            <input id="user-create-id" type="text" placeholder="例如 u_003" />
+
+            <label for="user-create-name">用户名</label>
+            <input id="user-create-name" type="text" placeholder="例如 coffee_fan" />
+
+            <label for="user-create-price-min">预算下限</label>
+            <input id="user-create-price-min" type="number" min="0" step="1" placeholder="例如 100" />
+
+            <label for="user-create-price-max">预算上限</label>
+            <input id="user-create-price-max" type="number" min="0" step="1" placeholder="例如 500" />
+
+            <label for="user-create-long-interests">长期兴趣</label>
+            <input id="user-create-long-interests" type="text" placeholder="例如 跑步, 健身装备" />
+
+            <label for="user-create-recent-interests">近期兴趣</label>
+            <input id="user-create-recent-interests" type="text" placeholder="例如 缓震, 手冲" />
+
+            <label for="user-create-brands">品牌偏好</label>
+            <input id="user-create-brands" type="text" placeholder="例如 Nike, MUJI" />
+
+            <label for="user-create-negative-tags">负向偏好</label>
+            <input id="user-create-negative-tags" type="text" placeholder="例如 皮鞋, 高价" />
+
+            <button id="user-create-submit" type="submit">新增用户画像</button>
+          </form>
+
+          <div class="status-row trend-status-row">
+            <p id="user-management-status">正在加载用户画像...</p>
+          </div>
+
+          <div class="metric-grid" id="user-management-metric-grid" aria-live="polite"></div>
+          <section class="trend-list" id="user-management-list" aria-live="polite"></section>
+        </section>
+
+        <section id="admin-direction-management" class="product-source-panel" aria-labelledby="direction-management-title">
+          <div class="trend-heading">
+            <div>
+              <p class="eyebrow">Direction Manager</p>
+              <h2 id="direction-management-title">方向管理页</h2>
+              <p class="trend-intro">这里可以维护推荐方向本身，包括适用场景、预算范围、目标兴趣，以及该方向下要优先展示的商品。</p>
+            </div>
+            <button id="refresh-direction-management" type="button">刷新方向管理</button>
+          </div>
+
+          <form class="trend-filter-form" id="direction-management-filter-form">
+            <label for="direction-management-category-filter">品类</label>
+            <select id="direction-management-category-filter">
+              <option value="">全部品类</option>
+            </select>
+
+            <label for="direction-management-difficulty-filter">难度</label>
+            <select id="direction-management-difficulty-filter">
+              <option value="">全部难度</option>
+            </select>
+          </form>
+
+          <form class="product-management-form" id="direction-create-form">
+            <label for="direction-create-id">方向 ID</label>
+            <input id="direction-create-id" type="text" placeholder="例如 d_commute_running" />
+
+            <label for="direction-create-title">方向标题</label>
+            <input id="direction-create-title" type="text" placeholder="例如 通勤友好型跑步入门" />
+
+            <label for="direction-create-category">品类</label>
+            <input id="direction-create-category" type="text" placeholder="例如 健身装备" />
+
+            <label for="direction-create-scene">目标场景</label>
+            <input id="direction-create-scene" type="text" placeholder="例如 通勤 + 日常训练" />
+
+            <label for="direction-create-difficulty">难度级别</label>
+            <input id="direction-create-difficulty" type="text" placeholder="例如 入门" />
+
+            <label for="direction-create-budget-min">预算下限</label>
+            <input id="direction-create-budget-min" type="number" min="0" step="1" placeholder="例如 150" />
+
+            <label for="direction-create-budget-max">预算上限</label>
+            <input id="direction-create-budget-max" type="number" min="0" step="1" placeholder="例如 450" />
+
+            <label class="product-edit-span-2" for="direction-create-interests">目标兴趣</label>
+            <input
+              id="direction-create-interests"
+              class="product-edit-span-2"
+              type="text"
+              placeholder="例如 跑步, 通勤, 轻量"
+            />
+
+            <p class="direction-selector-label product-edit-span-2">分层商品</p>
+            <div id="direction-create-product-selector" class="direction-product-selector product-edit-span-2"></div>
+
+            <label class="product-edit-span-2" for="direction-create-description">方向说明</label>
+            <textarea
+              id="direction-create-description"
+              class="product-edit-span-2"
+              rows="4"
+              placeholder="一句话说明这个方向适合什么人、什么资源条件"
+            ></textarea>
+
+            <button id="direction-create-submit" type="submit">新增方向</button>
+          </form>
+
+          <div class="status-row trend-status-row">
+            <p id="direction-management-status">正在加载方向管理数据...</p>
+          </div>
+
+          <div class="metric-grid" id="direction-management-metric-grid" aria-live="polite"></div>
+          <section class="trend-list" id="direction-management-list" aria-live="polite"></section>
+        </section>
+
+        <section id="admin-import-history" class="trend-panel" aria-labelledby="import-history-title">
+          <div class="trend-heading">
+            <div>
+              <p class="eyebrow">Import History</p>
+              <h2 id="import-history-title">导入历史记录</h2>
+              <p class="trend-intro">这里会记录商品导入和趋势导入的预览、正式导入、使用的模板、结果数量和错误信息。</p>
+            </div>
+            <button id="refresh-import-history" type="button">刷新导入历史</button>
+          </div>
+
+          <form class="trend-filter-form" id="import-history-filter-form">
+            <label for="import-entity-filter">导入对象</label>
+            <select id="import-entity-filter">
+              <option value="">全部对象</option>
+              <option value="product">商品</option>
+              <option value="trend">趋势</option>
+            </select>
+
+            <label for="import-operation-filter">操作</label>
+            <select id="import-operation-filter">
+              <option value="">全部操作</option>
+              <option value="preview">预览</option>
+              <option value="import">导入</option>
+            </select>
+          </form>
+
+          <div class="status-row trend-status-row">
+            <p id="import-history-status">正在加载导入历史...</p>
+          </div>
+
+          <div class="metric-grid" id="import-history-metric-grid" aria-live="polite"></div>
+          <section class="trend-list" id="import-history-list" aria-live="polite"></section>
+        </section>
+
+        </div><!-- /admin-workspace -->
+      </div><!-- /admin-view -->
+    </main>
+
+    <template id="metric-card-template">
+      <article class="metric-card">
+        <p class="metric-label"></p>
+        <strong class="metric-value"></strong>
+      </article>
+    </template>
+
+    <template id="top-product-template">
+      <article class="top-product-row">
+        <div>
+          <strong class="top-product-title"></strong>
+          <p class="top-product-meta"></p>
+        </div>
+        <span class="top-product-ctr"></span>
+      </article>
+    </template>
+
+    <template id="trend-row-template">
+      <article class="trend-row">
+        <div class="trend-row-head">
+          <div>
+            <div class="trend-badges">
+              <span class="trend-source-badge"></span>
+              <span class="trend-category-badge"></span>
+            </div>
+            <h3 class="trend-keyword"></h3>
+          </div>
+          <div class="trend-scores">
+            <span class="trend-score-badge"></span>
+            <span class="sales-score-badge"></span>
+          </div>
+        </div>
+        <p class="trend-product-link"></p>
+        <div class="trend-mapping-controls">
+          <label class="trend-mapping-label">
+            映射商品
+            <select class="trend-product-select"></select>
+          </label>
+          <button class="trend-save-button" type="button">保存映射</button>
+        </div>
+        <div class="trend-edit-controls">
+          <label class="trend-score-label">
+            热度分
+            <input class="trend-score-input" type="number" min="0" step="0.1" />
+          </label>
+          <label class="trend-score-label">
+            销量分
+            <input class="sales-score-input" type="number" min="0" step="0.1" />
+          </label>
+          <button class="trend-update-button" type="button">保存分数</button>
+          <button class="trend-delete-button" type="button">删除记录</button>
+        </div>
+        <p class="trend-mapping-status"></p>
+      </article>
+    </template>
+
+    <template id="trend-preview-row-template">
+      <article class="trend-preview-row">
+        <div class="trend-preview-row-head">
+          <div>
+            <div class="trend-preview-badges">
+              <span class="trend-preview-status-badge"></span>
+              <span class="trend-preview-row-number"></span>
+            </div>
+            <h4 class="trend-preview-keyword"></h4>
+          </div>
+          <div class="trend-preview-scores">
+            <span class="trend-preview-trend-score"></span>
+            <span class="trend-preview-sales-score"></span>
+          </div>
+        </div>
+        <p class="trend-preview-meta"></p>
+        <p class="trend-preview-detail"></p>
+      </article>
+    </template>
+
+    <template id="product-source-row-template">
+      <article class="trend-row">
+        <div class="trend-row-head">
+          <div>
+            <div class="trend-badges">
+              <span class="trend-source-badge"></span>
+              <span class="trend-category-badge"></span>
+            </div>
+            <h3 class="trend-keyword"></h3>
+          </div>
+          <div class="trend-scores">
+            <span class="trend-score-badge"></span>
+            <span class="sales-score-badge"></span>
+          </div>
+        </div>
+        <p class="trend-product-link"></p>
+        <p class="trend-mapping-status"></p>
+      </article>
+    </template>
+
+    <template id="product-preview-row-template">
+      <article class="trend-preview-row">
+        <div class="trend-preview-row-head">
+          <div>
+            <div class="trend-preview-badges">
+              <span class="trend-preview-status-badge"></span>
+              <span class="trend-preview-row-number"></span>
+            </div>
+            <h4 class="trend-preview-keyword"></h4>
+          </div>
+          <div class="trend-preview-scores">
+            <span class="trend-preview-trend-score"></span>
+            <span class="trend-preview-sales-score"></span>
+          </div>
+        </div>
+        <p class="trend-preview-meta"></p>
+        <p class="trend-preview-detail"></p>
+      </article>
+    </template>
+
+    <template id="import-history-row-template">
+      <article class="trend-row">
+        <div class="trend-row-head">
+          <div>
+            <div class="trend-badges">
+              <span class="trend-source-badge"></span>
+              <span class="trend-category-badge"></span>
+            </div>
+            <h3 class="trend-keyword"></h3>
+          </div>
+          <div class="trend-scores">
+            <span class="trend-score-badge"></span>
+            <span class="sales-score-badge"></span>
+          </div>
+        </div>
+        <p class="trend-product-link"></p>
+        <p class="trend-mapping-status"></p>
+      </article>
+    </template>
+
+    <template id="product-management-row-template">
+      <article class="trend-row product-management-row">
+        <div class="trend-row-head">
+          <div>
+            <div class="trend-badges">
+              <span class="trend-source-badge"></span>
+              <span class="trend-category-badge"></span>
+            </div>
+            <h3 class="trend-keyword"></h3>
+          </div>
+          <div class="trend-scores">
+            <span class="trend-score-badge"></span>
+            <span class="sales-score-badge"></span>
+          </div>
+        </div>
+        <p class="trend-product-link"></p>
+        <div class="product-edit-grid">
+          <label>标题<input class="product-edit-title" type="text" /></label>
+          <label>品类<input class="product-edit-category" type="text" /></label>
+          <label>品牌<input class="product-edit-brand" type="text" /></label>
+          <label>价格<input class="product-edit-price" type="number" min="0" step="0.1" /></label>
+          <label>库存<input class="product-edit-stock" type="number" min="0" step="1" /></label>
+          <label>评分<input class="product-edit-rating" type="number" min="0" max="5" step="0.1" /></label>
+          <label>来源<input class="product-edit-source" type="text" /></label>
+          <label>外部 ID<input class="product-edit-external-id" type="text" /></label>
+          <label>热度分<input class="product-edit-popularity" type="number" min="0" step="0.1" /></label>
+          <label>销量分<input class="product-edit-sales" type="number" min="0" step="0.1" /></label>
+          <label>图片链接<input class="product-edit-image-url" type="text" /></label>
+          <label>特征标签<input class="product-edit-features" type="text" /></label>
+          <label class="product-edit-span-2">描述<textarea class="product-edit-description" rows="3"></textarea></label>
+        </div>
+        <div class="trend-edit-controls">
+          <button class="trend-update-button product-save-button" type="button">保存商品</button>
+        </div>
+        <p class="trend-mapping-status"></p>
+      </article>
+    </template>
+
+    <template id="product-sync-row-template">
+      <article class="trend-row product-management-row">
+        <div class="trend-row-head">
+          <div>
+            <div class="trend-badges">
+              <span class="trend-source-badge"></span>
+              <span class="trend-category-badge"></span>
+            </div>
+            <h3 class="trend-keyword"></h3>
+          </div>
+          <div class="trend-scores">
+            <span class="trend-score-badge"></span>
+            <span class="sales-score-badge"></span>
+          </div>
+        </div>
+        <p class="trend-product-link"></p>
+        <div class="product-edit-grid">
+          <label>名称<input class="product-sync-edit-name" type="text" /></label>
+          <label>类型
+            <select class="product-sync-edit-type">
+              <option value="file">文件</option>
+              <option value="url">URL</option>
+            </select>
+          </label>
+          <label>适配器<input class="product-sync-edit-adapter" type="text" placeholder="留空则自动识别" /></label>
+          <label class="product-edit-span-2">位置<input class="product-sync-edit-location" type="text" /></label>
+          <label>启用
+            <select class="product-sync-edit-enabled">
+              <option value="true">是</option>
+              <option value="false">否</option>
+            </select>
+          </label>
+          <label class="product-edit-span-2">备注<textarea class="product-sync-edit-notes" rows="3"></textarea></label>
+        </div>
+        <div class="trend-edit-controls">
+          <button class="trend-update-button product-sync-save-button" type="button">保存来源</button>
+          <button class="trend-save-button product-sync-run-button" type="button">立即同步</button>
+        </div>
+        <p class="trend-mapping-status"></p>
+      </article>
+    </template>
+
+    <template id="user-management-row-template">
+      <article class="trend-row product-management-row">
+        <div class="trend-row-head">
+          <div>
+            <div class="trend-badges">
+              <span class="trend-source-badge"></span>
+              <span class="trend-category-badge"></span>
+            </div>
+            <h3 class="trend-keyword"></h3>
+          </div>
+          <div class="trend-scores">
+            <span class="trend-score-badge"></span>
+            <span class="sales-score-badge"></span>
+          </div>
+        </div>
+        <p class="trend-product-link"></p>
+        <div class="product-edit-grid">
+          <label>用户名<input class="user-edit-name" type="text" /></label>
+          <label>预算下限<input class="user-edit-price-min" type="number" min="0" step="1" /></label>
+          <label>预算上限<input class="user-edit-price-max" type="number" min="0" step="1" /></label>
+          <label class="product-edit-span-2">长期兴趣<input class="user-edit-long-interests" type="text" /></label>
+          <label class="product-edit-span-2">近期兴趣<input class="user-edit-recent-interests" type="text" /></label>
+          <label class="product-edit-span-2">品牌偏好<input class="user-edit-brands" type="text" /></label>
+          <label class="product-edit-span-2">负向偏好<input class="user-edit-negative-tags" type="text" /></label>
+        </div>
+        <div class="trend-edit-controls">
+          <button class="trend-update-button user-save-button" type="button">保存用户画像</button>
+        </div>
+        <p class="trend-mapping-status"></p>
+      </article>
+    </template>
+
+    <template id="direction-management-row-template">
+      <article class="trend-row product-management-row">
+        <div class="trend-row-head">
+          <div>
+            <div class="trend-badges">
+              <span class="trend-source-badge"></span>
+              <span class="trend-category-badge"></span>
+            </div>
+            <h3 class="trend-keyword"></h3>
+          </div>
+          <div class="trend-scores">
+            <span class="trend-score-badge"></span>
+            <span class="sales-score-badge"></span>
+          </div>
+        </div>
+        <p class="trend-product-link"></p>
+        <div class="product-edit-grid">
+          <label>方向标题<input class="direction-edit-title" type="text" /></label>
+          <label>品类<input class="direction-edit-category" type="text" /></label>
+          <label>目标场景<input class="direction-edit-scene" type="text" /></label>
+          <label>难度级别<input class="direction-edit-difficulty" type="text" /></label>
+          <label>预算下限<input class="direction-edit-budget-min" type="number" min="0" step="1" /></label>
+          <label>预算上限<input class="direction-edit-budget-max" type="number" min="0" step="1" /></label>
+          <label class="product-edit-span-2">目标兴趣<input class="direction-edit-interests" type="text" /></label>
+          <div class="product-edit-span-2">
+            <p class="direction-selector-label">分层商品</p>
+            <div class="direction-product-selector"></div>
+          </div>
+          <label class="product-edit-span-2">方向说明<textarea class="direction-edit-description" rows="3"></textarea></label>
+        </div>
+        <div class="trend-edit-controls">
+          <button class="trend-update-button direction-save-button" type="button">保存方向</button>
+        </div>
+        <p class="trend-mapping-status"></p>
+      </article>
+    </template>
+
+    <template id="product-card-template">
+      <article class="product-card" tabindex="0">
+        <img class="product-image" alt="" />
+        <div class="product-body">
+          <div class="product-meta">
+            <span class="category"></span>
+            <span class="source-badge"></span>
+          </div>
+          <h2 class="product-title"></h2>
+          <p class="brand-price"></p>
+          <div class="tag-list"></div>
+          <p class="explanation"></p>
+          <button class="detail-button" type="button">查看详情</button>
+        </div>
+      </article>
+    </template>
+
+    <template id="direction-card-template">
+      <article class="direction-card">
+        <div class="direction-card-head">
+          <div>
+            <p class="direction-category"></p>
+            <h3 class="direction-name"></h3>
+          </div>
+          <span class="direction-score"></span>
+        </div>
+        <p class="direction-description"></p>
+        <div class="direction-meta">
+          <span class="direction-scene"></span>
+          <span class="direction-budget"></span>
+          <span class="direction-difficulty"></span>
+        </div>
+        <div class="direction-reasons"></div>
+        <div class="starter-products">
+          <p class="starter-title">起步商品</p>
+          <div class="starter-list"></div>
+        </div>
+        <button class="direction-action-button" type="button">进入该方向商品页</button>
+      </article>
+    </template>
+
+    <dialog class="product-dialog" id="product-dialog">
+      <div class="dialog-layout">
+        <button class="dialog-close" id="dialog-close" type="button" aria-label="关闭商品详情">关闭</button>
+        <img class="dialog-image" id="dialog-image" alt="" />
+        <div class="dialog-body">
+          <p class="dialog-category" id="dialog-category"></p>
+          <h2 id="dialog-title"></h2>
+          <p class="dialog-price" id="dialog-price"></p>
+          <p class="dialog-description" id="dialog-description"></p>
+          <div class="dialog-tags" id="dialog-tags"></div>
+          <dl class="dialog-facts">
+            <div>
+              <dt>品牌</dt>
+              <dd id="dialog-brand"></dd>
+            </div>
+            <div>
+              <dt>评分</dt>
+              <dd id="dialog-rating"></dd>
+            </div>
+            <div>
+              <dt>库存</dt>
+              <dd id="dialog-stock"></dd>
+            </div>
+          </dl>
+          <div class="dialog-explanation">
+            <p class="dialog-explanation-label">推荐原因</p>
+            <div class="tag-list" id="dialog-explanation-tags"></div>
+            <p class="dialog-explanation-text" id="dialog-explanation-text"></p>
+            <div class="feedback-actions">
+              <button class="feedback-button" id="dialog-feedback-helpful" data-feedback="helpful" type="button">解释有帮助</button>
+              <button class="feedback-button secondary" id="dialog-feedback-inaccurate" data-feedback="inaccurate" type="button">不准确</button>
+            </div>
+            <p class="feedback-status" id="dialog-feedback-status"></p>
+          </div>
+          <div class="detail-actions">
+            <button data-event="favorite" type="button">收藏</button>
+            <button data-event="add_to_cart" type="button">加入购物车</button>
+            <button class="secondary" data-event="dislike" type="button">不感兴趣</button>
+          </div>
+          <p class="detail-event-status" id="detail-event-status"></p>
+        </div>
+      </div>
+    </dialog>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

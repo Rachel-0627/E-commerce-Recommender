@@ -1,0 +1,33 @@
+[
+  {
+    "product_id": "ext_running_001",
+    "external_id": "sku-running-001",
+    "source": "catalog_import",
+    "title": "城市慢跑入门跑鞋",
+    "category": "运动鞋",
+    "brand": "Asics",
+    "price": 459,
+    "description": "适合入门跑者的缓震跑鞋，兼顾日常通勤和轻量训练。",
+    "features": ["缓震", "慢跑", "入门", "通勤"],
+    "image_url": "https://images.unsplash.com/photo-1543508282-6319a3e2621f",
+    "stock": 56,
+    "rating": 4.7,
+    "popularity_score": 82,
+    "sales_score": 76
+  },
+  {
+    "external_id": "sku-coffee-002",
+    "source": "catalog_import",
+    "title": "玻璃分享壶手冲套装",
+    "category": "厨房",
+    "brand": "Hario",
+    "price": 318,
+    "description": "适合家庭手冲入门，含滤杯和分享壶。",
+    "features": ["手冲", "咖啡", "玻璃", "入门"],
+    "image_url": "https://images.unsplash.com/photo-1509042239860-f550ce710b93",
+    "stock": 34,
+    "rating": 4.8,
+    "popularity_score": 88,
+    "sales_score": 72
+  }
+]

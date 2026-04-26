@@ -1,0 +1,245 @@
+[
+  {
+    "trend_id": "trend_running_shoes_apr",
+    "product_id": "p_001",
+    "source": "manual_market_scan",
+    "keyword": "缓震跑鞋",
+    "category": "运动鞋",
+    "trend_score": 92,
+    "sales_score": 86
+  },
+  {
+    "trend_id": "trend_running_shorts_apr",
+    "product_id": "p_002",
+    "source": "manual_market_scan",
+    "keyword": "训练短裤",
+    "category": "健身装备",
+    "trend_score": 78,
+    "sales_score": 72
+  },
+  {
+    "trend_id": "trend_compression_socks_apr",
+    "product_id": "p_006",
+    "source": "manual_market_scan",
+    "keyword": "跑步压缩袜",
+    "category": "健身装备",
+    "trend_score": 84,
+    "sales_score": 75
+  },
+  {
+    "trend_id": "trend_pourover_coffee_apr",
+    "product_id": "p_004",
+    "source": "manual_market_scan",
+    "keyword": "手冲咖啡",
+    "category": "厨房",
+    "trend_score": 89,
+    "sales_score": 81
+  },
+  {
+    "trend_id": "trend_storage_apr",
+    "product_id": "p_005",
+    "source": "manual_market_scan",
+    "keyword": "桌面收纳",
+    "category": "收纳",
+    "trend_score": 74,
+    "sales_score": 69
+  },
+  {
+    "trend_id": "trend_running_category_apr",
+    "product_id": null,
+    "source": "manual_market_scan",
+    "keyword": "跑步训练",
+    "category": "健身装备",
+    "trend_score": 80,
+    "sales_score": 70
+  },
+  {
+    "trend_id": "trend_hyaluronic_serum_apr",
+    "product_id": "p_007",
+    "source": "douyin_hot",
+    "keyword": "玻尿酸精华",
+    "category": "护肤",
+    "trend_score": 96,
+    "sales_score": 91
+  },
+  {
+    "trend_id": "trend_vitamin_c_serum_apr",
+    "product_id": "p_008",
+    "source": "douyin_hot",
+    "keyword": "维C早C精华",
+    "category": "护肤",
+    "trend_score": 94,
+    "sales_score": 88
+  },
+  {
+    "trend_id": "trend_amino_cleanser_apr",
+    "product_id": "p_009",
+    "source": "taobao_bestseller",
+    "keyword": "氨基酸洁面",
+    "category": "护肤",
+    "trend_score": 88,
+    "sales_score": 85
+  },
+  {
+    "trend_id": "trend_retinol_cream_apr",
+    "product_id": "p_010",
+    "source": "taobao_bestseller",
+    "keyword": "A醇视黄醇面霜",
+    "category": "护肤",
+    "trend_score": 91,
+    "sales_score": 83
+  },
+  {
+    "trend_id": "trend_sunscreen_apr",
+    "product_id": "p_011",
+    "source": "jd_bestseller",
+    "keyword": "防晒霜SPF50",
+    "category": "护肤",
+    "trend_score": 95,
+    "sales_score": 93
+  },
+  {
+    "trend_id": "trend_cushion_foundation_apr",
+    "product_id": "p_012",
+    "source": "douyin_hot",
+    "keyword": "气垫粉底国潮",
+    "category": "彩妆",
+    "trend_score": 87,
+    "sales_score": 80
+  },
+  {
+    "trend_id": "trend_anc_earbuds_apr",
+    "product_id": "p_013",
+    "source": "jd_bestseller",
+    "keyword": "真无线降噪耳机",
+    "category": "耳机",
+    "trend_score": 97,
+    "sales_score": 92
+  },
+  {
+    "trend_id": "trend_smartwatch_apr",
+    "product_id": "p_014",
+    "source": "jd_bestseller",
+    "keyword": "智能手表健康监测",
+    "category": "智能设备",
+    "trend_score": 93,
+    "sales_score": 87
+  },
+  {
+    "trend_id": "trend_wireless_keyboard_apr",
+    "product_id": "p_015",
+    "source": "taobao_bestseller",
+    "keyword": "无线机械键盘",
+    "category": "电脑配件",
+    "trend_score": 86,
+    "sales_score": 79
+  },
+  {
+    "trend_id": "trend_gan_charger_apr",
+    "product_id": "p_016",
+    "source": "taobao_bestseller",
+    "keyword": "氮化镓充电器",
+    "category": "电源配件",
+    "trend_score": 90,
+    "sales_score": 88
+  },
+  {
+    "trend_id": "trend_wireless_mouse_apr",
+    "product_id": "p_017",
+    "source": "jd_bestseller",
+    "keyword": "无线人体工学鼠标",
+    "category": "电脑配件",
+    "trend_score": 85,
+    "sales_score": 81
+  },
+  {
+    "trend_id": "trend_bt_speaker_apr",
+    "product_id": "p_018",
+    "source": "taobao_bestseller",
+    "keyword": "便携蓝牙音箱防水",
+    "category": "音频设备",
+    "trend_score": 82,
+    "sales_score": 76
+  },
+  {
+    "trend_id": "trend_auto_feeder_apr",
+    "product_id": "p_019",
+    "source": "taobao_bestseller",
+    "keyword": "宠物自动喂食器",
+    "category": "宠物用品",
+    "trend_score": 93,
+    "sales_score": 89
+  },
+  {
+    "trend_id": "trend_freeze_dried_treats_apr",
+    "product_id": "p_020",
+    "source": "douyin_hot",
+    "keyword": "猫咪冻干零食无添加",
+    "category": "宠物食品",
+    "trend_score": 98,
+    "sales_score": 95
+  },
+  {
+    "trend_id": "trend_kitten_food_apr",
+    "product_id": "p_021",
+    "source": "jd_bestseller",
+    "keyword": "幼猫猫粮皇家",
+    "category": "宠物食品",
+    "trend_score": 91,
+    "sales_score": 88
+  },
+  {
+    "trend_id": "trend_water_fountain_apr",
+    "product_id": "p_022",
+    "source": "taobao_bestseller",
+    "keyword": "宠物饮水机循环过滤",
+    "category": "宠物用品",
+    "trend_score": 89,
+    "sales_score": 84
+  },
+  {
+    "trend_id": "trend_cat_scratcher_apr",
+    "product_id": "p_023",
+    "source": "taobao_bestseller",
+    "keyword": "猫抓板剑麻磨爪",
+    "category": "宠物玩具",
+    "trend_score": 83,
+    "sales_score": 79
+  },
+  {
+    "trend_id": "trend_pet_probiotic_apr",
+    "product_id": "p_024",
+    "source": "douyin_hot",
+    "keyword": "宠物益生菌营养补充",
+    "category": "宠物保健",
+    "trend_score": 87,
+    "sales_score": 82
+  },
+  {
+    "trend_id": "trend_skincare_category_apr",
+    "product_id": null,
+    "source": "douyin_hot",
+    "keyword": "护肤成分党",
+    "category": "护肤",
+    "trend_score": 95,
+    "sales_score": 90
+  },
+  {
+    "trend_id": "trend_pet_category_apr",
+    "product_id": null,
+    "source": "taobao_bestseller",
+    "keyword": "宠物健康用品",
+    "category": "宠物用品",
+    "trend_score": 92,
+    "sales_score": 89
+  },
+  {
+    "trend_id": "trend_3c_category_apr",
+    "product_id": null,
+    "source": "jd_bestseller",
+    "keyword": "数码3C配件",
+    "category": "耳机",
+    "trend_score": 88,
+    "sales_score": 84
+  }
+]
